@@ -103,9 +103,9 @@ var appendItem = function(item) {
 var generateListItem = function(item) {
   var newListItem = document.createElement("li");
   newListItem.innerHTML = `
-      <span class="task-title"><input type="checkbox" class="js-toggle-complete ${(item.done == true)?'done':''}" data-id="${item.id}" data-done="0" ${(item.done == true)?'checked':''}> ${item.title}</span>
+      <span class="task-title"> ${item.title}</span>
       <div class="actions">
-        <button class="js-remove btn-remove" data-id="${item.id}"><i class="fas fa-times"></i></button>
+        <input type="checkbox" class="js-toggle-complete ${(item.done == true)?'done':''}" data-id="${item.id}" data-done="0" ${(item.done == true)?'checked':''}>
       </div>
     `;
   newListItem
