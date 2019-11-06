@@ -8,21 +8,6 @@ var toggleColorsItems = document.querySelectorAll(".js-toggle-color");
 var toggleCompleteItems = document.querySelectorAll(".js-toggle-complete");
 var todoList = document.querySelector(".todo-list");
 
-var toggleColor = function(event) {
-  event.preventDefault();
-  var color = event.currentTarget.dataset.color;
-  var nearestTask = event.currentTarget.closest("li");
-  var is_active = nearestTask.classList.contains(color);
-
-  nearestTask.classList.remove("blue", "green", "red");
-  nearestTask.style.color = "#000000";
-
-  if (!is_active) {
-    nearestTask.style.color = "#ffffff";
-    nearestTask.classList.add(color);
-  }
-};
-
 // TODO - Mark task as done at the API.
 var toggleComplete = function(event) {
   var isTaskDone = event.currentTarget.dataset.done;
