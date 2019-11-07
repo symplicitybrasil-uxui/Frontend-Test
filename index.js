@@ -105,16 +105,12 @@ var generateListItem = function(item) {
   newListItem.innerHTML = `
       <span class="task-title"> ${item.title}</span>
       <div class="actions">
-        <input type="checkbox" class="js-toggle-complete ${(item.done == true)?'done':''}" data-id="${item.id}" data-done="0" ${(item.done == true)?'checked':''}>
+        <a href="#" class="js-toggle-complete ${(item.done == true)?'done':''}" data-id="${item.id}" data-done="0"><i class="fas fa-check-circle"></i></a>
       </div>
     `;
   newListItem
     .getElementsByClassName("js-toggle-complete")[0]
     .addEventListener("click", toggleComplete);
-
-  newListItem
-    .getElementsByClassName("js-remove")[0]
-    .addEventListener("click", removeTask);
 
   var colorButtons = newListItem.getElementsByClassName("js-toggle-color");
   Array.from(colorButtons).forEach(function(current) {

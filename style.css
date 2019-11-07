@@ -29,12 +29,14 @@ h1 {
 
 .todo-list li {
   width: 100%;
-  display: block;
+  display: flex;
   box-sizing: border-box;
   position: relative;
   border-bottom: 1px solid #ddd;
   padding-top: 15px;
   padding-bottom: 15px;
+  justify-content: space-between;
+  outline: none;
 }
 
 .todo-list li:last-child {
@@ -48,6 +50,10 @@ h1 {
   align-items: baseline;
 }
 
+.todo-list li a {
+  color: #d5d5d5;
+}
+
 .todo-list li span input[type=checkbox] {
   margin-right: 7px;
 }
@@ -55,6 +61,10 @@ h1 {
 .todo-list .completed span {
   text-decoration: line-through;
   opacity: 0.5;
+}
+
+.todo-list .completed a {
+  color: #0ed974;
 }
 
 form input, form button {
