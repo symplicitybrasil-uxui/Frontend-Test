@@ -67,9 +67,16 @@ h1 {
   color: #0ed974;
 }
 
+form {
+  margin: 20px 0;
+  display: block;
+  height: 40px;
+}
+
 form input, form button {
-  display: inline-block;
-  height: 30px;
+  display: block;
+  float: left;
+  height: 40px;
   width: 90%;
   border-radius: 5px 0px 0px 5px;
   border: 1px solid #ccc;
@@ -79,14 +86,13 @@ form input, form button {
   font-size: 14px;
 }
 form button {
-  width: 9%;
+  width: 10%;
   background: #0e99d9;
   border-color: #0e99c5;
   color: #fff;
   text-indent: 0px;
   border-radius: 0px 5px 5px 0px;
   cursor: pointer;
-  margin-left: -1%;
 }
 
 .btn {
