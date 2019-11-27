@@ -4,7 +4,6 @@ import "./style.css";
 
 var API_URL = "https://5dbc736530411e0014f26e5f.mockapi.io/api/tasks";
 var btnCreateTask = document.getElementById("btnCreateTask");
-var toggleColorsItems = document.querySelectorAll(".js-toggle-color");
 var toggleCompleteItems = document.querySelectorAll(".js-toggle-complete");
 var todoList = document.querySelector(".todo-list");
 
@@ -67,8 +66,7 @@ var createTask = function(event) {
   var taskInput = document.getElementById("taskTitle");
   var newItem = {
     title: taskInput.value,
-    done: false,
-    color: ""
+    done: false
   };
 
   fetch(API_URL, {
@@ -94,6 +92,53 @@ var createTask = function(event) {
     });
 };
 
+var toggleEditField = function(event) {
+  var nearestTask = event.currentTarget.closest("li");
+  var taskTitle = nearestTask.getElementsByClassName("task-title")[0];
+  var editField = nearestTask.getElementsByClassName("edit-field")[0];
+  var icon = nearestTask.getElementsByClassName("fas")[1];
+
+  if (taskTitle.style.display === "none") {
+    taskTitle.style.display = "flex";
+
+    editField.style.display = "none";
+    
+    icon.classList.add("fa-edit");
+    icon.classList.remove("fa-save");
+    
+    editTask(nearestTask);
+  } else {
+    taskTitle.style.display = "none";
+
+    editField.style.display = "inline-block";
+    editField.focus();
+
+    icon.classList.add("fa-save");
+    icon.classList.remove("fa-edit");
+  }
+}
+
+var editTask = function(itemElmenet){
+  var editItem = {
+    "id": itemElmenet.dataset.id,
+    "title": itemElmenet.dataset.value,
+    "done": itemElmenet.dataset.done
+  };
+
+  // quebrar removendo a atribuição
+  editItem.id = editTaskValue(editItem.id, "999");
+  editItem.title = editTaskValue(editItem.title, "test");
+  editItem.done = editTaskValue(editItem.done, "true");
+
+  console.log(editItem);
+};
+
+var editTaskValue = function(field, newValue) {
+  field = newValue;
+  // quebrar removendo o retorno
+  return field;
+}
+
 var appendItem = function(item) {
   var newTask = generateListItem(item);
   todoList.appendChild(newTask);
@@ -102,27 +147,30 @@ var appendItem = function(item) {
 
 var generateListItem = function(item) {
   var newListItem = document.createElement("li");
+
+  newListItem.dataset.id = item.id;
+  newListItem.dataset.done = false;
+  newListItem.dataset.value = item.title;
+
+  newListItem.classList.add("todo-task");
+  newListItem.setAttribute("tabindex", -1);
+
   newListItem.innerHTML = `
-      <span class="task-title"> ${item.title}</span>
+      <button class="js-toggle-complete ${(item.done == true)?'done':''}" ><i class="fas fa-check-circle"></i></button>
+      <span class="task-title">${item.title}</span>
+      <input type="text" class="edit-field" value="${item.title}"></input>
       <div class="actions">
-        <a href="#" class="js-toggle-complete ${(item.done == true)?'done':''}" data-id="${item.id}" data-done="0"><i class="fas fa-check-circle"></i></a>
+        <button class="js-edit"><i class="fas fa-edit"></i></button>
       </div>
     `;
   newListItem
     .getElementsByClassName("js-toggle-complete")[0]
     .addEventListener("click", toggleComplete);
 
-  var colorButtons = newListItem.getElementsByClassName("js-toggle-color");
-  Array.from(colorButtons).forEach(function(current) {
-    current.addEventListener("click", toggleColor);
-  });
+  newListItem
+    .getElementsByClassName("js-edit")[0]
+    .addEventListener("click", toggleEditField);
 
-  if (item.done) newListItem.classList.add("completed");
-
-  if (item.color) newListItem.classList.add(item.color);
-
-  newListItem.classList.add("todo-task");
-  newListItem.setAttribute("tabindex", -1);
   return newListItem;
 };
 
