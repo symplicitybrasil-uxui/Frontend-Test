@@ -75,23 +75,13 @@ var btnCreateTask = document.getElementById("btnCreateTask");
 var todoList = document.querySelector(".todo-list");
 
 var toggleComplete = function(event) {
-  var taskElement = event.currentTarget.closest("li");
-  var isTaskDone = taskElement.dataset.done == "true";
-  var taskId = taskElement.dataset.id;
-  var btnEdit = taskElement.querySelector(".btn-edit");
+  var taskElement = event.currentTarget.closest("li"),
+    isTaskDone = taskElement.dataset.done == "true",
+    taskId = taskElement.dataset.id,
+    btnEdit = taskElement.querySelector(".btn-edit"),
+    editObject = { done: !isTaskDone };
 
-  fetch(API_URL + `/${taskId}`, {
-    headers: { "Content-Type": "application/json; charset=utf-8" },
-    method: "PUT",
-    body: JSON.stringify({ done: !isTaskDone })
-  })
-    .then(function(response) {
-      switch (response.status) {
-        case 200:
-          return response.json();
-          break;
-      }
-    })
+  HttpService.put(editObject, taskId)
     .then(function(data) {
       if (data.done) {
         taskElement.classList.add("completed");
