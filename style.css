@@ -91,7 +91,7 @@ h1 {
 }
 
 .todo-list .completed button {
-  color: #0ed974;
+  color: #388e3c;
 }
 
 form {
@@ -114,8 +114,8 @@ form input, form button {
 }
 form button {
   width: 10%;
-  background: #0e99d9;
-  border-color: #0e99c5;
+  background: #42a5f5;
+  border-color: #42a5f5;
   color: #fff;
   text-indent: 0px;
   border-radius: 0px 5px 5px 0px;
