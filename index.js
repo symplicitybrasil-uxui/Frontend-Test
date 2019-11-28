@@ -29,9 +29,24 @@ var HttpService = (function() {
     });
   };
 
+  // Remover o put. Mover fetch para dentro da função que invoca
+  var put = function(object, id) {
+    return fetch(API_URL + `/${id}`, {
+      headers: { "Content-Type": "application/json; charset=utf-8" },
+      method: "PUT",
+      body: JSON.stringify(object)
+    }).then(function(response) {
+      switch (response.status) {
+        case 200:
+          return response.json();
+      }
+    });
+  };
+
   return {
     get: get,
-    post: post
+    post: post,
+    put: put
   };
 })();
 
@@ -120,23 +135,18 @@ var toggleEditField = function(event) {
   var editField = nearestTask.getElementsByClassName("edit-field")[0];
   var icon = nearestTask.getElementsByClassName("fas")[1];
 
-  if (taskTitle.style.display === "none") {
-    editTask(nearestTask)
-      .then(function(response) {
-        switch (response.status) {
-          case 200:
-            return response.json();
-        }
-      })
-      .then(function(data) {
-        taskTitle.innerHTML = data.title;
-        icon.classList.add("fa-edit");
-        icon.classList.remove("fa-save");
+  var isSaveOperation = taskTitle.style.display === "none";
 
-        taskTitle.style.display = "flex";
+  if (isSaveOperation) {
+    editTask(nearestTask).then(function(data) {
+      taskTitle.innerHTML = data.title;
+      icon.classList.add("fa-edit");
+      icon.classList.remove("fa-save");
 
-        editField.style.display = "none";
-      });
+      taskTitle.style.display = "flex";
+
+      editField.style.display = "none";
+    });
   } else {
     taskTitle.style.display = "none";
 
@@ -150,19 +160,13 @@ var toggleEditField = function(event) {
 
 var editTask = function(itemElement) {
   var editItem = {
-    id: itemElement.dataset.id,
     title: itemElement.dataset.value
   };
   var newValue = itemElement.querySelector("input").value;
 
   // quebrar removendo a atribuição
   editItem.title = editTaskValue(editItem.title, newValue);
-
-  return fetch(API_URL + `/${editItem.id}`, {
-    headers: { "Content-Type": "application/json; charset=utf-8" },
-    method: "PUT",
-    body: JSON.stringify(editItem)
-  });
+  return HttpService.put(editItem, itemElement.dataset.id);
 };
 
 var editTaskValue = function(field, newValue) {
