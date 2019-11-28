@@ -4,14 +4,12 @@ import "./style.css";
 
 var API_URL = "https://5dbc736530411e0014f26e5f.mockapi.io/api/tasks";
 var btnCreateTask = document.getElementById("btnCreateTask");
-var toggleCompleteItems = document.querySelectorAll(".js-toggle-complete");
 var todoList = document.querySelector(".todo-list");
 
 // TODO - Mark task as done at the API.
 var toggleComplete = function(event) {
-  var isTaskDone = event.currentTarget.dataset.done;
   var nearestTask = event.currentTarget.closest("li");
-  var is_complete = nearestTask.classList.contains("completed");
+  var isTaskDone = nearestTask.dataset.done == "true";
   var taskId = nearestTask.dataset.id;
 
   fetch(API_URL + `/${taskId}`, {
@@ -22,20 +20,22 @@ var toggleComplete = function(event) {
     .then(function(response) {
       switch (response.status) {
         case 200:
-          console.log(response);
+          return response.json();
           break;
       }
+    })
+    .then(function(data) {
+      if (data.done) {
+        nearestTask.classList.add("completed");
+      } else {
+        nearestTask.classList.remove("completed");
+      }
+      nearestTask.dataset.done = data.done;
     })
     .catch(function(error) {
       // TODO - Handle adding new errors.
       console.log(error);
     });
-
-  nearestTask.classList.remove("completed");
-
-  if (!is_complete) {
-    nearestTask.classList.add("completed");
-  }
 };
 
 var removeTask = function(event) {
@@ -157,16 +157,18 @@ var generateListItem = function(item) {
   var newListItem = document.createElement("li");
 
   newListItem.dataset.id = item.id;
-  newListItem.dataset.done = item.done;
+  newListItem.dataset.done = item.done == true;
   newListItem.dataset.value = item.title;
 
   newListItem.classList.add("todo-task");
   newListItem.setAttribute("tabindex", -1);
 
+  if (item.done) {
+    newListItem.classList.add("completed");
+  }
+
   newListItem.innerHTML = `
-      <button class="js-toggle-complete ${
-        item.done == true ? "done" : ""
-      }" ><i class="fas fa-check-circle"></i></button>
+      <button class="js-toggle-complete"><i class="fas fa-check-circle"></i></button>
       <span class="task-title">${item.title}</span>
       <input type="text" class="edit-field" value="${item.title}"></input>
       <div class="actions">
