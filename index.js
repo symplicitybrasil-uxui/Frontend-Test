@@ -51,8 +51,16 @@ var HttpService = (function() {
 })();
 
 var TodoList = (function(HttpService) {
+  var btnCreateTask = document.getElementById("btnCreateTask");
+  var todoList = document.querySelector(".todo-list");
+
   var loadTasksAPI = function() {
     return HttpService.get();
+  };
+
+  var appendItem = function(item) {
+    var newItem = TodoList.ItemFactory.get(item.id, item.title, item.done);
+    todoList.appendChild(newItem);
   };
 
   var initList = function() {
@@ -65,14 +73,52 @@ var TodoList = (function(HttpService) {
       .catch(function(error) {
         // TODO - Handle API request error.
       });
+
+    btnCreateTask.addEventListener("click", createTask, false);
   };
   return {
     init: initList
   };
 })(HttpService);
 
-var btnCreateTask = document.getElementById("btnCreateTask");
-var todoList = document.querySelector(".todo-list");
+TodoList.ItemFactory = (function() {
+  var generateListItem = function(id, title, done) {
+    var newListItem = document.createElement("li");
+    newListItem.dataset.id = id;
+    newListItem.dataset.done = done == true;
+    newListItem.dataset.value = title;
+
+    newListItem.classList.add("todo-task");
+
+    if (done) {
+      newListItem.classList.add("completed");
+    }
+
+    newListItem.innerHTML = `
+      <button class="js-toggle-complete"><i class="fas fa-check-circle"></i></button>
+      <span class="task-title">${title}</span>
+      <input type="text" class="edit-field" value="${title}"></input>
+      <div class="actions">
+        <button class="js-edit btn-edit"><i class="fas fa-edit"></i></button>
+      </div>
+    `;
+    newListItem
+      .getElementsByClassName("js-toggle-complete")[0]
+      .addEventListener("click", toggleComplete);
+
+    newListItem
+      .getElementsByClassName("js-edit")[0]
+      .addEventListener("click", toggleEditField);
+
+    console.log(newListItem);
+
+    return newListItem;
+  };
+
+  return {
+    get: generateListItem
+  };
+})();
 
 var toggleComplete = function(event) {
   var taskElement = event.currentTarget.closest("li"),
@@ -162,45 +208,6 @@ var editTaskValue = function(field, newValue) {
   return field;
 };
 
-var appendItem = function(item) {
-  var newTask = generateListItem(item);
-  todoList.appendChild(newTask);
-};
-
-var generateListItem = function(item) {
-  var newListItem = document.createElement("li");
-
-  newListItem.dataset.id = item.id;
-  newListItem.dataset.done = item.done == true;
-  newListItem.dataset.value = item.title;
-
-  newListItem.classList.add("todo-task");
-  newListItem.setAttribute("tabindex", -1);
-
-  if (item.done) {
-    newListItem.classList.add("completed");
-  }
-
-  newListItem.innerHTML = `
-      <button class="js-toggle-complete"><i class="fas fa-check-circle"></i></button>
-      <span class="task-title">${item.title}</span>
-      <input type="text" class="edit-field" value="${item.title}"></input>
-      <div class="actions">
-        <button class="js-edit btn-edit"><i class="fas fa-edit"></i></button>
-      </div>
-    `;
-  newListItem
-    .getElementsByClassName("js-toggle-complete")[0]
-    .addEventListener("click", toggleComplete);
-
-  newListItem
-    .getElementsByClassName("js-edit")[0]
-    .addEventListener("click", toggleEditField);
-
-  return newListItem;
-};
-
-btnCreateTask.addEventListener("click", createTask, false);
 
 (function(TodoList) {
   TodoList.init();
