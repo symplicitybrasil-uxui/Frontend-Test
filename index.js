@@ -29,7 +29,7 @@ var HttpService = (function() {
     });
   };
 
-  // Remover o put. Mover fetch para dentro da função que invoca
+  // Usar o put??
   var put = function(object, id) {
     return fetch(API_URL + `/${id}`, {
       headers: { "Content-Type": "application/json; charset=utf-8" },
@@ -56,10 +56,10 @@ var todoList = document.querySelector(".todo-list");
 
 // TODO - Mark task as done at the API.
 var toggleComplete = function(event) {
-  var nearestTask = event.currentTarget.closest("li");
-  var isTaskDone = nearestTask.dataset.done == "true";
-  var taskId = nearestTask.dataset.id;
-  var btnEdit = nearestTask.querySelector(".btn-edit");
+  var taskElement = event.currentTarget.closest("li");
+  var isTaskDone = taskElement.dataset.done == "true";
+  var taskId = taskElement.dataset.id;
+  var btnEdit = taskElement.querySelector(".btn-edit");
 
   fetch(API_URL + `/${taskId}`, {
     headers: { "Content-Type": "application/json; charset=utf-8" },
@@ -75,13 +75,13 @@ var toggleComplete = function(event) {
     })
     .then(function(data) {
       if (data.done) {
-        nearestTask.classList.add("completed");
+        taskElement.classList.add("completed");
         btnEdit.style.display = "none";
       } else {
-        nearestTask.classList.remove("completed");
+        taskElement.classList.remove("completed");
         btnEdit.style.display = "inline-block";
       }
-      nearestTask.dataset.done = data.done;
+      taskElement.dataset.done = data.done;
     })
     .catch(function(error) {
       // TODO - Handle adding new errors.
@@ -92,7 +92,7 @@ var toggleComplete = function(event) {
 var removeTask = function(event) {
   event.preventDefault();
   var taskId = event.currentTarget.dataset.id;
-  var nearestTask = event.currentTarget.closest("li");
+  var taskElement = event.currentTarget.closest("li");
 
   fetch(API_URL + `/${taskId}`, {
     method: "DELETE"
@@ -100,7 +100,7 @@ var removeTask = function(event) {
     .then(function(response) {
       switch (response.status) {
         case 200:
-          nearestTask.remove();
+          taskElement.remove();
           break;
       }
     })
@@ -130,15 +130,15 @@ var createTask = function(event) {
 };
 
 var toggleEditField = function(event) {
-  var nearestTask = event.currentTarget.closest("li");
-  var taskTitle = nearestTask.getElementsByClassName("task-title")[0];
-  var editField = nearestTask.getElementsByClassName("edit-field")[0];
-  var icon = nearestTask.getElementsByClassName("fas")[1];
+  var taskElement = event.currentTarget.closest("li");
+  var taskTitle = taskElement.getElementsByClassName("task-title")[0];
+  var editField = taskElement.querySelector("input");
+  var icon = taskElement.getElementsByClassName("fas")[1];
 
   var isSaveOperation = taskTitle.style.display === "none";
 
   if (isSaveOperation) {
-    editTask(nearestTask).then(function(data) {
+    editTask(taskElement).then(function(data) {
       taskTitle.innerHTML = data.title;
       icon.classList.add("fa-edit");
       icon.classList.remove("fa-save");
