@@ -76,6 +76,7 @@ var TodoList = (function(HttpService) {
 
     btnCreateTask.addEventListener("click", createTask, false);
   };
+
   return {
     init: initList
   };
@@ -109,8 +110,6 @@ TodoList.ItemFactory = (function() {
     newListItem
       .getElementsByClassName("js-edit")[0]
       .addEventListener("click", toggleEditField);
-
-    console.log(newListItem);
 
     return newListItem;
   };
