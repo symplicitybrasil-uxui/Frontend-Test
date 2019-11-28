@@ -14,8 +14,24 @@ var HttpService = (function() {
     });
   };
 
+  // Remover o post. Mover fetch para dentro da função que invoca
+  var post = function(object) {
+    return fetch(API_URL, {
+      headers: { "Content-Type": "application/json; charset=utf-8" },
+      method: "POST",
+      body: JSON.stringify(object)
+    }).then(function(response) {
+      switch (response.status) {
+        case 201:
+          return response.json();
+          break;
+      }
+    });
+  };
+
   return {
-    get: get
+    get: get,
+    post: post
   };
 })();
 
@@ -86,23 +102,11 @@ var createTask = function(event) {
     title: taskInput.value,
     done: false
   };
-
-  fetch(API_URL, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify(newItem)
-  })
-    .then(function(response) {
-      switch (response.status) {
-        case 201:
-          return response.json();
-      }
-    })
+  HttpService.post(newItem)
     .then(function(newTask) {
-      var newTaskElement = appendItem(newTask);
-      newTaskElement.focus();
+      appendItem(newTask);
+      taskInput.value = "";
+      taskInput.focus();
     })
     .catch(function(error) {
       // TODO - Handle adding new errors.
@@ -170,7 +174,6 @@ var editTaskValue = function(field, newValue) {
 var appendItem = function(item) {
   var newTask = generateListItem(item);
   todoList.appendChild(newTask);
-  return newTask;
 };
 
 var generateListItem = function(item) {
