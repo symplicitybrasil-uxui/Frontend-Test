@@ -50,7 +50,27 @@ var HttpService = (function() {
   };
 })();
 
-// var API_URL = "https://5dbc736530411e0014f26e5f.mockapi.io/api/tasks";
+var TodoList = (function(HttpService) {
+  var loadTasksAPI = function() {
+    return HttpService.get();
+  };
+
+  var initList = function() {
+    loadTasksAPI()
+      .then(function(tasks) {
+        tasks.forEach(function(currentTask) {
+          appendItem(currentTask);
+        });
+      })
+      .catch(function(error) {
+        // TODO - Handle API request error.
+      });
+  };
+  return {
+    init: initList
+  };
+})(HttpService);
+
 var btnCreateTask = document.getElementById("btnCreateTask");
 var todoList = document.querySelector(".todo-list");
 
@@ -81,27 +101,6 @@ var toggleComplete = function(event) {
         btnEdit.style.display = "inline-block";
       }
       taskElement.dataset.done = data.done;
-    })
-    .catch(function(error) {
-      // TODO - Handle adding new errors.
-      console.log(error);
-    });
-};
-
-var removeTask = function(event) {
-  event.preventDefault();
-  var taskId = event.currentTarget.dataset.id;
-  var taskElement = event.currentTarget.closest("li");
-
-  fetch(API_URL + `/${taskId}`, {
-    method: "DELETE"
-  })
-    .then(function(response) {
-      switch (response.status) {
-        case 200:
-          taskElement.remove();
-          break;
-      }
     })
     .catch(function(error) {
       // TODO - Handle adding new errors.
@@ -211,20 +210,8 @@ var generateListItem = function(item) {
   return newListItem;
 };
 
-var loadTasksAPI = function() {
-  HttpService.get()
-    .then(function(tasks) {
-      tasks.forEach(function(currentTask) {
-        appendItem(currentTask);
-      });
-    })
-    .catch(function(error) {
-      // TODO - Handle API request error.
-    });
-};
-
 btnCreateTask.addEventListener("click", createTask, false);
 
-(function() {
-  loadTasksAPI();
-})();
+(function(TodoList) {
+  TodoList.init();
+})(TodoList);
