@@ -10,16 +10,14 @@ var todoList = document.querySelector(".todo-list");
 // TODO - Mark task as done at the API.
 var toggleComplete = function(event) {
   var isTaskDone = event.currentTarget.dataset.done;
-  var taskId = event.currentTarget.dataset.id;
   var nearestTask = event.currentTarget.closest("li");
   var is_complete = nearestTask.classList.contains("completed");
+  var taskId = nearestTask.dataset.id;
 
   fetch(API_URL + `/${taskId}`, {
+    headers: { "Content-Type": "application/json; charset=utf-8" },
     method: "PUT",
-     headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({ "done": !isTaskDone })
+    body: JSON.stringify({ done: !isTaskDone })
   })
     .then(function(response) {
       switch (response.status) {
@@ -99,14 +97,22 @@ var toggleEditField = function(event) {
   var icon = nearestTask.getElementsByClassName("fas")[1];
 
   if (taskTitle.style.display === "none") {
-    taskTitle.style.display = "flex";
+    editTask(nearestTask)
+      .then(function(response) {
+        switch (response.status) {
+          case 200:
+            return response.json();
+        }
+      })
+      .then(function(data) {
+        taskTitle.innerHTML = data.title;
+        icon.classList.add("fa-edit");
+        icon.classList.remove("fa-save");
 
-    editField.style.display = "none";
-    
-    icon.classList.add("fa-edit");
-    icon.classList.remove("fa-save");
-    
-    editTask(nearestTask);
+        taskTitle.style.display = "flex";
+
+        editField.style.display = "none";
+      });
   } else {
     taskTitle.style.display = "none";
 
@@ -116,28 +122,30 @@ var toggleEditField = function(event) {
     icon.classList.add("fa-save");
     icon.classList.remove("fa-edit");
   }
-}
+};
 
-var editTask = function(itemElmenet){
+var editTask = function(itemElement) {
   var editItem = {
-    "id": itemElmenet.dataset.id,
-    "title": itemElmenet.dataset.value,
-    "done": itemElmenet.dataset.done
+    id: itemElement.dataset.id,
+    title: itemElement.dataset.value
   };
+  var newValue = itemElement.querySelector("input").value;
 
   // quebrar removendo a atribuição
-  editItem.id = editTaskValue(editItem.id, "999");
-  editItem.title = editTaskValue(editItem.title, "test");
-  editItem.done = editTaskValue(editItem.done, "true");
+  editItem.title = editTaskValue(editItem.title, newValue);
 
-  console.log(editItem);
+  return fetch(API_URL + `/${editItem.id}`, {
+    headers: { "Content-Type": "application/json; charset=utf-8" },
+    method: "PUT",
+    body: JSON.stringify(editItem)
+  });
 };
 
 var editTaskValue = function(field, newValue) {
   field = newValue;
   // quebrar removendo o retorno
   return field;
-}
+};
 
 var appendItem = function(item) {
   var newTask = generateListItem(item);
@@ -149,14 +157,16 @@ var generateListItem = function(item) {
   var newListItem = document.createElement("li");
 
   newListItem.dataset.id = item.id;
-  newListItem.dataset.done = false;
+  newListItem.dataset.done = item.done;
   newListItem.dataset.value = item.title;
 
   newListItem.classList.add("todo-task");
   newListItem.setAttribute("tabindex", -1);
 
   newListItem.innerHTML = `
-      <button class="js-toggle-complete ${(item.done == true)?'done':''}" ><i class="fas fa-check-circle"></i></button>
+      <button class="js-toggle-complete ${
+        item.done == true ? "done" : ""
+      }" ><i class="fas fa-check-circle"></i></button>
       <span class="task-title">${item.title}</span>
       <input type="text" class="edit-field" value="${item.title}"></input>
       <div class="actions">
