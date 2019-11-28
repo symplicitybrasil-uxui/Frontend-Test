@@ -11,6 +11,7 @@ var toggleComplete = function(event) {
   var nearestTask = event.currentTarget.closest("li");
   var isTaskDone = nearestTask.dataset.done == "true";
   var taskId = nearestTask.dataset.id;
+  var btnEdit = nearestTask.querySelector(".btn-edit");
 
   fetch(API_URL + `/${taskId}`, {
     headers: { "Content-Type": "application/json; charset=utf-8" },
@@ -27,8 +28,10 @@ var toggleComplete = function(event) {
     .then(function(data) {
       if (data.done) {
         nearestTask.classList.add("completed");
+        btnEdit.style.display = "none";
       } else {
         nearestTask.classList.remove("completed");
+        btnEdit.style.display = "inline-block";
       }
       nearestTask.dataset.done = data.done;
     })
@@ -172,7 +175,7 @@ var generateListItem = function(item) {
       <span class="task-title">${item.title}</span>
       <input type="text" class="edit-field" value="${item.title}"></input>
       <div class="actions">
-        <button class="js-edit"><i class="fas fa-edit"></i></button>
+        <button class="js-edit btn-edit"><i class="fas fa-edit"></i></button>
       </div>
     `;
   newListItem

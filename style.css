@@ -77,6 +77,10 @@ h1 {
   font-size: 1em;
 }
 
+.completed .btn-edit {
+  display: none;
+}
+
 .todo-list li span input[type=checkbox] {
   margin-right: 7px;
 }
