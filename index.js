@@ -54,7 +54,6 @@ var HttpService = (function() {
 var btnCreateTask = document.getElementById("btnCreateTask");
 var todoList = document.querySelector(".todo-list");
 
-// TODO - Mark task as done at the API.
 var toggleComplete = function(event) {
   var taskElement = event.currentTarget.closest("li");
   var isTaskDone = taskElement.dataset.done == "true";
@@ -131,17 +130,16 @@ var createTask = function(event) {
 
 var toggleEditField = function(event) {
   var taskElement = event.currentTarget.closest("li");
-  var taskTitle = taskElement.getElementsByClassName("task-title")[0];
+  var taskTitle = taskElement.querySelector(".task-title");
   var editField = taskElement.querySelector("input");
-  var icon = taskElement.getElementsByClassName("fas")[1];
-
+  var editIcon = taskElement.querySelector(".btn-edit > i");
   var isSaveOperation = taskTitle.style.display === "none";
 
   if (isSaveOperation) {
     editTask(taskElement).then(function(data) {
       taskTitle.innerHTML = data.title;
-      icon.classList.add("fa-edit");
-      icon.classList.remove("fa-save");
+      editIcon.classList.add("fa-edit");
+      editIcon.classList.remove("fa-save");
 
       taskTitle.style.display = "flex";
 
@@ -153,8 +151,8 @@ var toggleEditField = function(event) {
     editField.style.display = "inline-block";
     editField.focus();
 
-    icon.classList.add("fa-save");
-    icon.classList.remove("fa-edit");
+    editIcon.classList.add("fa-save");
+    editIcon.classList.remove("fa-edit");
   }
 };
 
