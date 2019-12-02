@@ -2,30 +2,28 @@
 
 [Edit on StackBlitz ⚡️](https://stackblitz.com/edit/js-2mixzq)
 
+# Front-end dev test
 
 * HTML
-    * Quebrar semantica (div em tudo)
+  * Fix semantic
+  * Implement overlay (loading animation - optional)
 
-* CSS
-    * Quebrar responsividade (media-query)
-    * Posicionamento
-    * Sass * elimina?
-    * Completar task
-    * BG
+* CSS 
+  * Convert to SCSS (optional)
+  * Implement overlay (see HTML)
+  * Horizontal alignment for main container
+  * Fix body bg image
+  * Fix actions position on list-items
+  * Add media querys to fix body padding, button styles and font size for font awesome (under 576px)
+  * Fix input and button positioning (inside form)
 
 * JS
-    * API (completar task // promise)
-    * Vanilla
-    * DOM manipulation
-    * Eventos
+  * Include TodoList module in IIFE
+  * Fix ItemFactory HTML semantic (list-item)
+  * Add button events on appendItem
+  * Add return to updateValue function (testing variable assignment as value or reference)
+  * Move post request from createTask to HttpService (use promise)
+  * Toggle completed class on btnEdit inside toggleComplete
 
 * Plus
-    * Ax
-
-Fix semantics on HTML - we’re gonna put div in all fields
-Fix responsiveness using media-query
-Fix positioning
-Change css to sass
-Create function to complete task (JS and CSS) -> (API, DOM, Click, Vanilla)
-Fix BG image
-Improve AX somehow
+  * Ax
