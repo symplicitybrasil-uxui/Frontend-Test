@@ -1,3 +1,5 @@
+// Use scss sintaxe on this file, make any necessary changes without breaking it.
+
 html, body {
   min-height: 100vh;
 
@@ -138,3 +140,5 @@ form button {
 .actions a {
   margin-left: 12px;
 }
+
+/* Add media query for devices under 576px of width. */

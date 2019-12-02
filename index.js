@@ -1,4 +1,4 @@
-import "./style.css";
+import "./style.scss";
 
 var HttpService = (function() {
   var API_URL = "https://5dbc736530411e0014f26e5f.mockapi.io/api/tasks";
