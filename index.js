@@ -67,13 +67,7 @@ var TodoList = (function(HttpService) {
 
     HttpService.put(editObject, taskId)
       .then(function(data) {
-        if (data.done) {
-          taskElement.classList.add("completed");
-          btnEdit.style.display = "none";
-        } else {
-          taskElement.classList.remove("completed");
-          btnEdit.style.display = "inline-block";
-        }
+        // If data.done - add completed class.
         taskElement.dataset.done = data.done;
       })
       .catch(function(error) {
@@ -156,13 +150,9 @@ var TodoList = (function(HttpService) {
 
   var appendItem = function(item) {
     var newItem = TodoList.ItemFactory.get(item.id, item.title, item.done);
-    newItem
-      .getElementsByClassName("js-toggle-complete")[0]
-      .addEventListener("click", toggleComplete);
-
-    newItem
-      .getElementsByClassName("js-edit")[0]
-      .addEventListener("click", toggleEditField);
+    
+    // Add click event to ".js-toggle-complete", use toggleComplete function.
+    // Add click event to ".js-edit", use toggleEdit function.
 
     todoList.appendChild(newItem);
   };
