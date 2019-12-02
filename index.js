@@ -1,5 +1,3 @@
-// Import stylesheets
-// https://5dbc736530411e0014f26e5f.mockapi.io/api/tasks
 import "./style.css";
 
 var HttpService = (function() {
@@ -14,22 +12,8 @@ var HttpService = (function() {
     });
   };
 
-  // Remover o post. Mover fetch para dentro da função que invoca
-  var post = function(object) {
-    return fetch(API_URL, {
-      headers: { "Content-Type": "application/json; charset=utf-8" },
-      method: "POST",
-      body: JSON.stringify(object)
-    }).then(function(response) {
-      switch (response.status) {
-        case 201:
-          return response.json();
-          break;
-      }
-    });
-  };
+  var post;
 
-  // Usar o put??
   var put = function(object, id) {
     return fetch(API_URL + `/${id}`, {
       headers: { "Content-Type": "application/json; charset=utf-8" },
@@ -63,7 +47,8 @@ var TodoList = (function(HttpService) {
         });
       })
       .catch(function(error) {
-        // TODO - Handle API request error.
+        // Do nothing, if you want to debug, uncomment console.log.
+        // console.log(error);
       });
 
     btnCreateTask.addEventListener("click", createTask, false);
@@ -92,8 +77,8 @@ var TodoList = (function(HttpService) {
         taskElement.dataset.done = data.done;
       })
       .catch(function(error) {
-        // TODO - Handle adding new errors.
-        console.log(error);
+        // Do nothing, if you want to debug, uncomment console.log.
+        // console.log(error);
       });
   };
 
@@ -132,15 +117,26 @@ var TodoList = (function(HttpService) {
       title: taskInput.value,
       done: false
     };
-    HttpService.post(newItem)
+    fetch(API_URL, {
+      headers: { "Content-Type": "application/json; charset=utf-8" },
+      method: "POST",
+      body: JSON.stringify(newItem)
+    })
+      .then(function(response) {
+        switch (response.status) {
+          case 201:
+            return response.json();
+            break;
+        }
+      })
       .then(function(newTask) {
         appendItem(newTask);
         taskInput.value = "";
         taskInput.focus();
       })
       .catch(function(error) {
-        // TODO - Handle adding new errors.
-        console.log(error);
+        // Do nothing, if you want to debug, uncomment console.log.
+        // console.log(error);
       });
   };
 
@@ -150,15 +146,12 @@ var TodoList = (function(HttpService) {
     };
     var newValue = itemElement.querySelector("input").value;
 
-    // quebrar removendo a atribuição
-    editItem.title = updateValue(editItem.title, newValue);
+    updateValue(editItem.title, newValue);
     return HttpService.put(editItem, itemElement.dataset.id);
   };
 
   var updateValue = function(field, newValue) {
     field = newValue;
-    // quebrar removendo o retorno
-    return field;
   };
 
   var appendItem = function(item) {
@@ -181,7 +174,7 @@ var TodoList = (function(HttpService) {
 
 TodoList.ItemFactory = (function() {
   var generateListItem = function(id, title, done) {
-    var newListItem = document.createElement("li");
+    var newListItem = document.createElement("div");
     newListItem.dataset.id = id;
     newListItem.dataset.done = done == true;
     newListItem.dataset.value = title;
@@ -209,6 +202,6 @@ TodoList.ItemFactory = (function() {
   };
 })();
 
-(function(TodoList) {
+(function() {
   TodoList.init();
-})(TodoList);
+})();
