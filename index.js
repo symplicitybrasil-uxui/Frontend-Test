@@ -84,10 +84,8 @@ var TodoList = (function(HttpService) {
       .then(function(data) {
         if (data.done) {
           taskElement.classList.add("completed");
-          btnEdit.style.display = "none";
         } else {
           taskElement.classList.remove("completed");
-          btnEdit.style.display = "inline-block";
         }
         taskElement.dataset.done = data.done;
       })
