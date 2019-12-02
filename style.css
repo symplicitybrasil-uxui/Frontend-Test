@@ -1,6 +1,13 @@
+html, body {
+  min-height: 100vh;
+
+  margin: 0;
+  padding: 0;
+}
+
 body {
-  background-color: #eee;
-  padding: 2em 0;
+  background: url('https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcS43WtuWrhfBvapywCjmOCoCypafBkzzhaHc0QpS_fcHX1jipeN') no-repeat center;
+  background-size: cover;
   font-family: 'Roboto', sans-serif;
   color: #3a3a3a;
 }
