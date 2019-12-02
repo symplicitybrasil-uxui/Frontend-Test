@@ -12,10 +12,22 @@ var HttpService = (function() {
     });
   };
 
-  var post;
+  var post = function (object) {
+      return fetch(API_URL, {
+          headers: { "Content-Type": "application/json; charset=utf-8" },
+          method: "POST",
+          body: JSON.stringify(object)
+      }).then(function (response) {
+          switch (response.status) {
+              case 201:
+                  return response.json();
+                  break;
+          }
+      });
+  };
 
   var put = function(object, id) {
-    return fetch(API_URL + `/${id}`, {
+    return fetch(API_URL + ("/" + id), {
       headers: { "Content-Type": "application/json; charset=utf-8" },
       method: "PUT",
       body: JSON.stringify(object)
@@ -48,7 +60,7 @@ var TodoList = (function(HttpService) {
       })
       .catch(function(error) {
         // Do nothing, if you want to debug, uncomment console.log.
-        // console.log(error);
+        console.log(error);
       });
 
     btnCreateTask.addEventListener("click", createTask, false);
@@ -68,11 +80,16 @@ var TodoList = (function(HttpService) {
     HttpService.put(editObject, taskId)
       .then(function(data) {
         // If data.done - add completed class.
+        if (data.done) {
+          taskElement.classList.add("completed");
+        } else {
+          taskElement.classList.remove("completed");
+        }
         taskElement.dataset.done = data.done;
       })
       .catch(function(error) {
         // Do nothing, if you want to debug, uncomment console.log.
-        // console.log(error);
+        console.log(error);
       });
   };
 
@@ -111,18 +128,7 @@ var TodoList = (function(HttpService) {
       title: taskInput.value,
       done: false
     };
-    fetch(API_URL, {
-      headers: { "Content-Type": "application/json; charset=utf-8" },
-      method: "POST",
-      body: JSON.stringify(newItem)
-    })
-      .then(function(response) {
-        switch (response.status) {
-          case 201:
-            return response.json();
-            break;
-        }
-      })
+    HttpService.post(newItem)
       .then(function(newTask) {
         appendItem(newTask);
         taskInput.value = "";
@@ -130,7 +136,7 @@ var TodoList = (function(HttpService) {
       })
       .catch(function(error) {
         // Do nothing, if you want to debug, uncomment console.log.
-        // console.log(error);
+        console.log(error);
       });
 
       // Implement loading screen overlay for this.
@@ -142,19 +148,26 @@ var TodoList = (function(HttpService) {
     };
     var newValue = itemElement.querySelector("input").value;
 
-    updateValue(editItem.title, newValue);
+    editItem.title = updateValue(editItem.title, newValue);
     return HttpService.put(editItem, itemElement.dataset.id);
   };
 
   var updateValue = function(field, newValue) {
     field = newValue;
+    return field;
   };
 
   var appendItem = function(item) {
     var newItem = TodoList.ItemFactory.get(item.id, item.title, item.done);
-    
     // Add click event to ".js-toggle-complete", use toggleComplete function.
+      newItem
+        .getElementsByClassName("js-toggle-complete")[0]
+        .addEventListener("click", toggleComplete);
+
     // Add click event to ".js-edit", use toggleEdit function.
+    newItem
+      .getElementsByClassName("js-edit")[0]
+      .addEventListener("click", toggleEditField);
 
     todoList.appendChild(newItem);
   };
@@ -166,7 +179,7 @@ var TodoList = (function(HttpService) {
 
 TodoList.ItemFactory = (function() {
   var generateListItem = function(id, title, done) {
-    var newListItem = document.createElement("div");
+    var newListItem = document.createElement("li");
     newListItem.dataset.id = id;
     newListItem.dataset.done = done == true;
     newListItem.dataset.value = title;
@@ -194,6 +207,6 @@ TodoList.ItemFactory = (function() {
   };
 })();
 
-(function() {
+(function(TodoList) {
   TodoList.init();
-})();
+})(TodoList);

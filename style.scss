@@ -2,7 +2,6 @@
 
 html, body {
   min-height: 100vh;
-
   margin: 0;
   padding: 0;
 }
@@ -10,11 +9,15 @@ html, body {
 body {
   background: url('https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcS43WtuWrhfBvapywCjmOCoCypafBkzzhaHc0QpS_fcHX1jipeN');
   font-family: 'Roboto', sans-serif;
+  background-size: cover;
   color: #3a3a3a;
 }
 
 main {
   /* center container. */
+  max-width: 640px;
+  width: 100%;
+  margin: 0px auto;
 }
 
 h1 {
@@ -102,7 +105,7 @@ h1 {
 
 form {
   margin: 20px 0;
-  display: block;
+  display: flex;
   height: 40px;
 }
 
@@ -115,6 +118,7 @@ form input, form button {
   text-indent: 10px;
   outline: none;
   font-size: 14px;
+  width: 90%;
 }
 
 form button {
@@ -124,6 +128,7 @@ form button {
   text-indent: 0px;
   border-radius: 0px 5px 5px 0px;
   cursor: pointer;
+  width: 10%;
 }
 
 .btn {
@@ -141,4 +146,17 @@ form button {
   margin-left: 12px;
 }
 
+.js-toggle-complete, .js-edit, .btn-edit {
+  background-color: transparent;
+}
+
 /* Add media query for devices under 576px of width. */
+@media only screen and (max-width: 576px){
+  html, body {
+    padding: 10px;
+  }
+
+  .todo-list li button {
+    font-size: 1.5em;
+  }
+}
