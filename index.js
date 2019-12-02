@@ -132,6 +132,8 @@ var TodoList = (function(HttpService) {
         // Do nothing, if you want to debug, uncomment console.log.
         // console.log(error);
       });
+
+      // Implement loading screen overlay for this.
   };
 
   var updateTask = function(itemElement) {

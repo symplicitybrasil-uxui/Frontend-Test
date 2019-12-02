@@ -1,14 +1,19 @@
+html, body {
+  height: 100vh;
+  width:100vw;
+
+  margin: 0;
+  padding: 0;
+}
+
 body {
-  background-color: #eee;
-  padding: 2em 0;
+  background: url('https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcS43WtuWrhfBvapywCjmOCoCypafBkzzhaHc0QpS_fcHX1jipeN');
   font-family: 'Roboto', sans-serif;
   color: #3a3a3a;
 }
 
 main {
-  max-width: 640px;
-  width: 100%;
-  margin: 0 auto;
+  
 }
 
 h1 {
@@ -102,9 +107,7 @@ form {
 
 form input, form button {
   display: block;
-  float: left;
   height: 40px;
-  width: 90%;
   border-radius: 5px 0px 0px 5px;
   border: 1px solid #ccc;
   box-sizing: border-box;
@@ -112,8 +115,8 @@ form input, form button {
   outline: none;
   font-size: 14px;
 }
+
 form button {
-  width: 10%;
   background: #42a5f5;
   border-color: #42a5f5;
   color: #fff;
@@ -128,23 +131,9 @@ form button {
   padding: 12px 24px;
 }
 
-.btn-remove {
-  border: none;
-  background: none;
-  position: absolute;
-  top: 50%;
-  right: 5px;
-  transform: translateY(-50%);
-  cursor: pointer;
-}
-
-.toogle-color-box, .actions {
-  display: flex;
+.actions {
   justify-content: flex-start;
   align-content: center;
-} 
-.actions {
-  justify-content: flex-end
 }
 
 .actions a {
