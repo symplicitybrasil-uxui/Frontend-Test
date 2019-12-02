@@ -157,3 +157,19 @@ form button {
 .actions a {
   margin-left: 12px;
 }
+
+@media (max-width: 576px) {
+  body {
+    padding: 0 1em;
+  }
+
+  button {
+    background: transparent;
+    height: 50px;
+    width: 50px;
+  }
+
+  button .fas {
+    font-size: 1.5rem
+  }
+}
