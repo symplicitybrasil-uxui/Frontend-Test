@@ -12,6 +12,7 @@ var HttpService = (function() {
     });
   };
 
+  // Implement post method
   var post;
 
   var put = function(object, id) {
@@ -67,7 +68,7 @@ var TodoList = (function(HttpService) {
 
     HttpService.put(editObject, taskId)
       .then(function(data) {
-        // If data.done - add completed class.
+        // Add completed class when task is completed
         taskElement.dataset.done = data.done;
       })
       .catch(function(error) {
@@ -83,24 +84,18 @@ var TodoList = (function(HttpService) {
     var editIcon = taskElement.querySelector(".btn-edit > i");
     var isSaveOperation = taskTitle.style.display === "none";
 
+    // Update task view based on isSaveOperation result
+    /* Tips: 
+     * .fa-edit is used on the edit icon
+     * .fa-save is used on the save icon
+     * data.title holds the updated value from API
+    */
     if (isSaveOperation) {
       updateTask(taskElement).then(function(data) {
-        taskTitle.innerHTML = data.title;
-        editIcon.classList.add("fa-edit");
-        editIcon.classList.remove("fa-save");
-
-        taskTitle.style.display = "flex";
-
-        editField.style.display = "none";
+        // do something
       });
     } else {
-      taskTitle.style.display = "none";
-
-      editField.style.display = "inline-block";
       editField.focus();
-
-      editIcon.classList.add("fa-save");
-      editIcon.classList.remove("fa-edit");
     }
   };
 
@@ -153,8 +148,8 @@ var TodoList = (function(HttpService) {
   var appendItem = function(item) {
     var newItem = TodoList.ItemFactory.get(item.id, item.title, item.done);
     
-    // Add click event to ".js-toggle-complete", use toggleComplete function.
-    // Add click event to ".js-edit", use toggleEdit function.
+    // Add event to ".js-toggle-complete" hook, use toggleComplete function.
+    // Add event to ".js-edit" hook, use toggleEdit function.
 
     todoList.appendChild(newItem);
   };
