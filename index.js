@@ -1,7 +1,8 @@
 import "./style.scss";
 
+var API_URL = "https://5dbc736530411e0014f26e5f.mockapi.io/api/tasks";
+
 var HttpService = (function() {
-  var API_URL = "https://5dbc736530411e0014f26e5f.mockapi.io/api/tasks";
 
   var get = function() {
     return fetch(API_URL).then(function(response) {
@@ -13,7 +14,18 @@ var HttpService = (function() {
   };
 
   // Implement post method
-  var post;
+  var post = function(object) {
+    return fetch(API_URL, {
+      headers: { "Content-Type": "application/json; charset=utf-8" },
+      method: "POST",
+      body: JSON.stringify(object)
+    }).then(function(response) {
+      switch (response.status) {
+        case 201:
+          return response.json();
+      }
+    });
+  };
 
   var put = function(object, id) {
     return fetch(API_URL + `/${id}`, {
@@ -49,7 +61,7 @@ var TodoList = (function(HttpService) {
       })
       .catch(function(error) {
         // Do nothing, if you want to debug, uncomment console.log.
-        // console.log(error);
+        console.log(error);
       });
 
     btnCreateTask.addEventListener("click", createTask, false);
@@ -73,7 +85,7 @@ var TodoList = (function(HttpService) {
       })
       .catch(function(error) {
         // Do nothing, if you want to debug, uncomment console.log.
-        // console.log(error);
+        console.log(error);
       });
   };
 
@@ -106,26 +118,15 @@ var TodoList = (function(HttpService) {
       title: taskInput.value,
       done: false
     };
-    fetch(API_URL, {
-      headers: { "Content-Type": "application/json; charset=utf-8" },
-      method: "POST",
-      body: JSON.stringify(newItem)
-    })
-      .then(function(response) {
-        switch (response.status) {
-          case 201:
-            return response.json();
-            break;
-        }
-      })
-      .then(function(newTask) {
+    HttpService.post(newItem).then(function(newTask) {
+        console.log(newTask);
         appendItem(newTask);
         taskInput.value = "";
         taskInput.focus();
       })
       .catch(function(error) {
         // Do nothing, if you want to debug, uncomment console.log.
-        // console.log(error);
+        console.log(error);
       });
 
       // Implement loading screen overlay for this.
