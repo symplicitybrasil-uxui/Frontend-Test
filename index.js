@@ -1,40 +1,10 @@
 import "./style.scss";
+import { HttpService } from "./HttpService.js";
 
-var HttpService = (function() {
-  var API_URL = "https://5dbc736530411e0014f26e5f.mockapi.io/api/tasks";
-
-  var get = function() {
-    return fetch(API_URL).then(function(response) {
-      switch (response.status) {
-        case 200:
-          return response.json();
-      }
-    });
-  };
-
-  // Implement post method
-  var post;
-
-  var put = function(object, id) {
-    return fetch(API_URL + `/${id}`, {
-      headers: { "Content-Type": "application/json; charset=utf-8" },
-      method: "PUT",
-      body: JSON.stringify(object)
-    }).then(function(response) {
-      switch (response.status) {
-        case 200:
-          return response.json();
-      }
-    });
-  };
-
-  return {
-    get: get,
-    post: post,
-    put: put
-  };
-})();
-
+/**
+ * Main Module to control TodoList functionality
+ * Note: Uses HttpService as a dependency
+ */
 var TodoList = (function(HttpService) {
   var btnCreateTask = document.getElementById("btnCreateTask");
   var todoList = document.querySelector(".todo-list");
@@ -157,7 +127,7 @@ var TodoList = (function(HttpService) {
   return {
     init: initList
   };
-})(HttpService);
+})();
 
 TodoList.ItemFactory = (function() {
   var generateListItem = function(id, title, done) {
@@ -189,6 +159,6 @@ TodoList.ItemFactory = (function() {
   };
 })();
 
-(function() {
+(function(TodoList) {
   TodoList.init();
-})();
+})(TodoList);
