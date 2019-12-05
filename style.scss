@@ -10,13 +10,27 @@ html, body {
 }
 
 body {
-  background: url('https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcS43WtuWrhfBvapywCjmOCoCypafBkzzhaHc0QpS_fcHX1jipeN');
+  background: url('https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcS43WtuWrhfBvapywCjmOCoCypafBkzzhaHc0QpS_fcHX1jipeN') no-repeat  ;
   font-family: 'Roboto', sans-serif;
   color: #3a3a3a;
 }
 
 main {
-  /* center container. */
+  max-width: 1170px;
+  margin: 0 auto;
+}
+
+header{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+header form{
+  display: flex;
+  
+
 }
 
 h1 {
@@ -83,6 +97,7 @@ h1 {
   min-width: 32px;
   min-height: 32px;
   font-size: 1em;
+  background: none;
 }
 
 .completed .btn-edit {
