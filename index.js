@@ -10,6 +10,10 @@ var TodoList = (function(HttpService) {
   var todoList = document.querySelector(".todo-list");
   var taskInput = document.getElementById("taskTitle");
 
+  /**
+   * Initializates list getting data from API 
+   * and attaches events
+   */
   var initList = function() {
     loadTasksAPI()
       .then(function(tasks) {
@@ -25,10 +29,17 @@ var TodoList = (function(HttpService) {
     btnCreateTask.addEventListener("click", createTask, false);
   };
 
+  /**
+   * Access API to load pre-defined tasks
+   */
   var loadTasksAPI = function() {
     return HttpService.get();
   };
 
+  /**
+   * Capture the event to mark and unmark a task
+   * as complete
+   */
   var toggleComplete = function(event) {
     var taskElement = event.currentTarget.closest("li"),
       isTaskDone = taskElement.dataset.done == "true",
@@ -38,7 +49,7 @@ var TodoList = (function(HttpService) {
 
     HttpService.put(editObject, taskId)
       .then(function(data) {
-        // Add completed class when task is completed
+        // Add or remove `completed` class based on current status
         taskElement.dataset.done = data.done;
       })
       .catch(function(error) {
@@ -47,6 +58,10 @@ var TodoList = (function(HttpService) {
       });
   };
 
+  /**
+   * Capture the event to update the interface based
+   * on the current edit state
+   */
   var toggleEditField = function(event) {
     var taskElement = event.currentTarget.closest("li");
     var taskTitle = taskElement.querySelector(".task-title");
@@ -69,6 +84,10 @@ var TodoList = (function(HttpService) {
     }
   };
 
+  /**
+   * Capture the event to insert a new task 
+   * and send it to the API
+   */
   var createTask = function(event) {
     event.preventDefault();
 
@@ -101,6 +120,10 @@ var TodoList = (function(HttpService) {
       // Implement loading screen overlay for this.
   };
 
+  /**
+   * Use item data to update task title
+   * and send it to the API
+   */
   var updateTask = function(itemElement) {
     var editItem = {
       title: itemElement.dataset.value
@@ -111,10 +134,17 @@ var TodoList = (function(HttpService) {
     return HttpService.put(editItem, itemElement.dataset.id);
   };
 
+  /**
+   * Update an item field with a new value
+   */
   var updateValue = function(field, newValue) {
     field = newValue;
   };
 
+  /**
+   * Appends a new item based created using factory and attach events 
+   * needed
+   */
   var appendItem = function(item) {
     var newItem = TodoList.ItemFactory.get(item.id, item.title, item.done);
     
@@ -129,7 +159,14 @@ var TodoList = (function(HttpService) {
   };
 })();
 
+/**
+ * Module used to create items dynamically to the list
+ */
 TodoList.ItemFactory = (function() {
+  /**
+   * Creates html elements to be appended to the list
+   * and sets data on it
+   */
   var generateListItem = function(id, title, done) {
     var newListItem = document.createElement("div");
     newListItem.dataset.id = id;
