@@ -41,16 +41,22 @@ var TodoList = (function(HttpService) {
    * as complete
    */
   var toggleComplete = function(event) {
+
     var taskElement = event.currentTarget.closest("li"),
       isTaskDone = taskElement.dataset.done == "true",
       taskId = taskElement.dataset.id,
       btnEdit = taskElement.querySelector(".btn-edit"),
       editObject = { done: !isTaskDone };
-
+      
     HttpService.put(editObject, taskId)
       .then(function(data) {
         // Add or remove `completed` class based on current status
         taskElement.dataset.done = data.done;
+        if(data.done){
+          taskElement.classList.add('completed')
+        }else{
+          taskElement.classList.remove('completed')
+        }
       })
       .catch(function(error) {
         // Do nothing, if you want to debug, uncomment console.log.
@@ -63,11 +69,14 @@ var TodoList = (function(HttpService) {
    * on the current edit state
    */
   var toggleEditField = function(event) {
+
+    
     var taskElement = event.currentTarget.closest("li");
     var taskTitle = taskElement.querySelector(".task-title");
     var editField = taskElement.querySelector("input");
     var editIcon = taskElement.querySelector(".btn-edit > i");
     var isSaveOperation = taskTitle.style.display === "none";
+
 
     // Update task view based on isSaveOperation result
     /* Tips: 
@@ -75,12 +84,30 @@ var TodoList = (function(HttpService) {
      * .fa-save is used on the save icon
      * data.title holds the updated value from API
     */
+  
     if (isSaveOperation) {
       updateTask(taskElement).then(function(data) {
+
+        taskTitle.innerHTML = data.title;
         // do something
+        taskTitle.style.display = 'block';
+        editField.style.display = 'none';
+
+        
+    
+      editIcon.classList.add('fa-edit');
+      editIcon.classList.remove('fa-save');
+
+       
       });
     } else {
+      taskTitle.style.display = 'none';
+      editField.style.display = 'block';
+
       editField.focus();
+      editIcon.classList.remove('fa-edit');
+      editIcon.classList.add('fa-save');
+
     }
   };
 
@@ -95,18 +122,9 @@ var TodoList = (function(HttpService) {
       title: taskInput.value,
       done: false
     };
-    fetch(API_URL, {
-      headers: { "Content-Type": "application/json; charset=utf-8" },
-      method: "POST",
-      body: JSON.stringify(newItem)
-    })
-      .then(function(response) {
-        switch (response.status) {
-          case 201:
-            return response.json();
-            break;
-        }
-      })
+
+// Implement loading screen overlay for this.
+    HttpService.post(newItem)
       .then(function(newTask) {
         appendItem(newTask);
         taskInput.value = "";
@@ -114,10 +132,8 @@ var TodoList = (function(HttpService) {
       })
       .catch(function(error) {
         // Do nothing, if you want to debug, uncomment console.log.
-        // console.log(error);
+        console.log(error);
       });
-
-      // Implement loading screen overlay for this.
   };
 
   /**
@@ -130,7 +146,7 @@ var TodoList = (function(HttpService) {
     };
     var newValue = itemElement.querySelector("input").value;
 
-    updateValue(editItem.title, newValue);
+    editItem.title = updateValue(editItem.title, newValue);
     return HttpService.put(editItem, itemElement.dataset.id);
   };
 
@@ -138,7 +154,7 @@ var TodoList = (function(HttpService) {
    * Update an item field with a new value
    */
   var updateValue = function(field, newValue) {
-    field = newValue;
+    return field = newValue;
   };
 
   /**
@@ -147,17 +163,18 @@ var TodoList = (function(HttpService) {
    */
   var appendItem = function(item) {
     var newItem = TodoList.ItemFactory.get(item.id, item.title, item.done);
-    
+    //console.log(newItem)
     // Add event to ".js-toggle-complete" hook, use toggleComplete function.
     // Add event to ".js-edit" hook, use toggleEdit function.
-
+   newItem.getElementsByClassName('js-toggle-complete')[0].addEventListener("click", toggleComplete); 
+   newItem.getElementsByClassName('js-edit')[0].addEventListener("click", toggleEditField);
     todoList.appendChild(newItem);
   };
 
   return {
     init: initList
   };
-})();
+})(HttpService);
 
 /**
  * Module used to create items dynamically to the list
@@ -168,7 +185,7 @@ TodoList.ItemFactory = (function() {
    * and sets data on it
    */
   var generateListItem = function(id, title, done) {
-    var newListItem = document.createElement("div");
+    var newListItem = document.createElement("li");
     newListItem.dataset.id = id;
     newListItem.dataset.done = done == true;
     newListItem.dataset.value = title;
