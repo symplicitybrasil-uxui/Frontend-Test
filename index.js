@@ -1,6 +1,7 @@
 import "./style.scss";
 import { HttpService } from "./HttpService.js";
 
+
 /**
  * Main Module to control TodoList functionality
  * Note: Uses HttpService as a dependency
@@ -23,7 +24,7 @@ var TodoList = (function(HttpService) {
       })
       .catch(function(error) {
         // Do nothing, if you want to debug, uncomment console.log.
-        // console.log(error);
+        console.log(error);
       });
 
     btnCreateTask.addEventListener("click", createTask, false);
@@ -50,6 +51,7 @@ var TodoList = (function(HttpService) {
     HttpService.put(editObject, taskId)
       .then(function(data) {
         // Add or remove `completed` class based on current status
+        taskElement.classList.toggle('completed');
         taskElement.dataset.done = data.done;
       })
       .catch(function(error) {
@@ -77,11 +79,22 @@ var TodoList = (function(HttpService) {
     */
     if (isSaveOperation) {
       updateTask(taskElement).then(function(data) {
-        // do something
+        taskTitle.style.display = 'block';
+        editField.style.display = 'none';
+        
+        taskTitle.value = data.title;
+        taskTitle.textContent = data.title;
+
+        document.querySelector('[data-id]')
       });
     } else {
+      taskTitle.style.display = 'none';
+      editField.style.display = 'block';
       editField.focus();
     }
+
+    editIcon.classList.toggle('fa-edit');
+    editIcon.classList.toggle('fa-save');
   };
 
   /**
@@ -91,15 +104,13 @@ var TodoList = (function(HttpService) {
   var createTask = function(event) {
     event.preventDefault();
 
+    document.querySelector('.overlay').classList.toggle('overlay--show');
+
     var newItem = {
       title: taskInput.value,
       done: false
     };
-    fetch(API_URL, {
-      headers: { "Content-Type": "application/json; charset=utf-8" },
-      method: "POST",
-      body: JSON.stringify(newItem)
-    })
+    HttpService.post(newItem)
       .then(function(response) {
         switch (response.status) {
           case 201:
@@ -111,13 +122,12 @@ var TodoList = (function(HttpService) {
         appendItem(newTask);
         taskInput.value = "";
         taskInput.focus();
+        document.querySelector('.overlay').classList.toggle('overlay--show');
       })
       .catch(function(error) {
         // Do nothing, if you want to debug, uncomment console.log.
         // console.log(error);
       });
-
-      // Implement loading screen overlay for this.
   };
 
   /**
@@ -125,12 +135,12 @@ var TodoList = (function(HttpService) {
    * and send it to the API
    */
   var updateTask = function(itemElement) {
-    var editItem = {
-      title: itemElement.dataset.value
-    };
     var newValue = itemElement.querySelector("input").value;
 
-    updateValue(editItem.title, newValue);
+    var editItem = {
+      title: newValue
+    };
+
     return HttpService.put(editItem, itemElement.dataset.id);
   };
 
@@ -148,8 +158,10 @@ var TodoList = (function(HttpService) {
   var appendItem = function(item) {
     var newItem = TodoList.ItemFactory.get(item.id, item.title, item.done);
     
-    // Add event to ".js-toggle-complete" hook, use toggleComplete function.
+    // Add event to ".js-toggle-complete" hook, use toggleComplete function.    
+    newItem.querySelector('.js-toggle-complete').addEventListener('click', toggleComplete);
     // Add event to ".js-edit" hook, use toggleEdit function.
+    newItem.querySelector('.js-edit').addEventListener('click', toggleEditField);
 
     todoList.appendChild(newItem);
   };
@@ -157,7 +169,7 @@ var TodoList = (function(HttpService) {
   return {
     init: initList
   };
-})();
+})(HttpService);
 
 /**
  * Module used to create items dynamically to the list
@@ -168,7 +180,7 @@ TodoList.ItemFactory = (function() {
    * and sets data on it
    */
   var generateListItem = function(id, title, done) {
-    var newListItem = document.createElement("div");
+    var newListItem = document.createElement("li");
     newListItem.dataset.id = id;
     newListItem.dataset.done = done == true;
     newListItem.dataset.value = title;

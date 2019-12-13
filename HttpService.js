@@ -1,4 +1,4 @@
-exports.HttpService = (function() {
+export const HttpService = (function() {
   var API_URL = "https://5dbc736530411e0014f26e5f.mockapi.io/api/tasks";
 
   var get = function() {
@@ -11,7 +11,13 @@ exports.HttpService = (function() {
   };
 
   // Implement post method
-  var post;
+  var post = function(object) {
+    return fetch(API_URL, {
+      headers: { "Content-Type": "application/json; charset=utf-8" },
+      method: "POST",
+      body: JSON.stringify(object)
+    });
+  };
 
   var put = function(object, id) {
     return fetch(API_URL + `/${id}`, {
@@ -32,3 +38,5 @@ exports.HttpService = (function() {
     put: put
   };
 })();
+
+export default HttpService
