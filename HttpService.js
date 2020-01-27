@@ -11,7 +11,18 @@ exports.HttpService = (function() {
   };
 
   // Implement post method
-  var post;
+  var post = function(object) {
+    return fetch(API_URL, {
+      headers: { "Content-Type": "application/json; charset=utf-8" },
+      method: "POST",
+      body: JSON.stringify(object)
+    }).then(function(response) {
+      switch (response.status) {
+        case 201:
+          return response.json();
+      }
+    });
+  };
 
   var put = function(object, id) {
     return fetch(API_URL + `/${id}`, {

@@ -11,12 +11,16 @@ html, body {
 
 body {
   background: url('https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcS43WtuWrhfBvapywCjmOCoCypafBkzzhaHc0QpS_fcHX1jipeN');
+  background-repeat: no-repeat;
+  background-size: cover;
   font-family: 'Roboto', sans-serif;
   color: #3a3a3a;
 }
 
 main {
-  /* center container. */
+  max-width: 650px;
+  margin: 0 auto;
+  padding: 15px 0;
 }
 
 h1 {
@@ -104,11 +108,12 @@ h1 {
 
 form {
   margin: 20px 0;
-  display: block;
+  display: flex;
   height: 40px;
 }
 
 form input, form button {
+  width: 100%;
   display: block;
   height: 40px;
   border-radius: 5px 0px 0px 5px;
@@ -120,6 +125,7 @@ form input, form button {
 }
 
 form button {
+  flex-basis: 75px;
   background: #42a5f5;
   border-color: #42a5f5;
   color: #fff;
