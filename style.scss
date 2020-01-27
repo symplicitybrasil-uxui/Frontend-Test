@@ -16,7 +16,10 @@ body {
 }
 
 main {
-  /* center container. */
+  min-width: 80%;
+  max-width: 16rem;
+  margin: 0 auto;
+  display: block;
 }
 
 h1 {
@@ -83,6 +86,7 @@ h1 {
   min-width: 32px;
   min-height: 32px;
   font-size: 1em;
+  background: transparent;
 }
 
 .completed .btn-edit {
@@ -104,7 +108,7 @@ h1 {
 
 form {
   margin: 20px 0;
-  display: block;
+  display: flex;
   height: 40px;
 }
 
@@ -117,6 +121,10 @@ form input, form button {
   text-indent: 10px;
   outline: none;
   font-size: 14px;
+}
+
+form input {
+  width: 100%
 }
 
 form button {

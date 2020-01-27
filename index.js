@@ -50,11 +50,12 @@ var TodoList = (function(HttpService) {
     HttpService.put(editObject, taskId)
       .then(function(data) {
         // Add or remove `completed` class based on current status
+        taskElement.classList.toggle('completed', data.done)
         taskElement.dataset.done = data.done;
       })
       .catch(function(error) {
         // Do nothing, if you want to debug, uncomment console.log.
-        // console.log(error);
+        console.log(error);
       });
   };
 
@@ -76,10 +77,21 @@ var TodoList = (function(HttpService) {
      * data.title holds the updated value from API
     */
     if (isSaveOperation) {
+      console.log(editField.value)
       updateTask(taskElement).then(function(data) {
-        // do something
-      });
+        editIcon.classList.remove('fa-save')
+        editIcon.classList.add('fa-edit')
+        editField.style.display = 'none'
+        taskTitle.style.display = 'flex'
+        taskTitle.innerHTML = editField.value
+
+        console.log(data)
+      }).catch(err => console.log(err));
     } else {
+      editIcon.classList.remove('fa-edit')
+      editIcon.classList.add('fa-save')
+      editField.style.display = 'flex'
+      taskTitle.style.display = 'none'
       editField.focus();
     }
   };
@@ -147,9 +159,11 @@ var TodoList = (function(HttpService) {
    */
   var appendItem = function(item) {
     var newItem = TodoList.ItemFactory.get(item.id, item.title, item.done);
-    
-    // Add event to ".js-toggle-complete" hook, use toggleComplete function.
-    // Add event to ".js-edit" hook, use toggleEdit function.
+    var toggleButton = newItem.querySelector('.js-toggle-complete')
+    var editButton = newItem.querySelector('.actions > .js-edit')
+
+    toggleButton.addEventListener('click', toggleComplete)
+    editButton.addEventListener('click', toggleEditField)
 
     todoList.appendChild(newItem);
   };
@@ -157,7 +171,7 @@ var TodoList = (function(HttpService) {
   return {
     init: initList
   };
-})();
+})(HttpService);
 
 /**
  * Module used to create items dynamically to the list
@@ -168,7 +182,7 @@ TodoList.ItemFactory = (function() {
    * and sets data on it
    */
   var generateListItem = function(id, title, done) {
-    var newListItem = document.createElement("div");
+    var newListItem = document.createElement("li");
     newListItem.dataset.id = id;
     newListItem.dataset.done = done == true;
     newListItem.dataset.value = title;
